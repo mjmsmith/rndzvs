@@ -1,0 +1,12 @@
+!!! 5
+html
+  head
+    meta(name="viewport", content="initial-scale=1.0, user-scalable=no")
+    title #{title}
+    link(rel="stylesheet", href="/stylesheets/style.css")
+    script(src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js")
+    script(src="http://maps.googleapis.com/maps/api/js?libraries=places&sensor=true")
+    script(src="/javascripts/underscore-1.2.1.js")
+    script(src="/javascripts/backbone-0.53.js")
+    script(src="/javascripts/client/Common.js")
+  body!= body

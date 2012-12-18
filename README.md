@@ -1,7 +1,7 @@
 rndzvs
 ======
 
-**rndzvs** is an adhoc event invitation and location tracking site.
+**rndzvs** is an adhoc event invitation and location tracking site.  It lives at [rndzvs.com](http://rndzvs.com).
 
 prerequisites
 =============

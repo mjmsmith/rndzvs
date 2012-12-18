@@ -1,4 +1,4 @@
-.hg*
-node_modules/
-public/javascripts/client/*.js
-public/stylesheets/*.css
+/server/*.js
+/node_modules/
+/public/javascripts/client/*.js
+/public/stylesheets/*.css

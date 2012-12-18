@@ -2,20 +2,24 @@
 
 spawn = require("child_process").spawn
 
+# note: we cannot just require CoffeeScript here, command.js modifies returned CoffeeScript object
+#       because of http://nodejs.org/api/modules.html#modules_module_caching_caveats
+#       instead try to lookup CoffeeScript object in our parent module (which is command.js)
+
 coffee = (args) ->
-  child = spawn("coffee", args)
+  child = spawn("node_modules/coffee-script/bin/coffee", args)
   child.stdout.on "data", (data) ->
     console.log(data.toString())
   child.stderr.on "data", (data) ->
     console.log(data.toString())
 
 task "watch", "Watch/compile changed .coffee files.", (options) ->
-  server = coffee(["-r", "/Users/mark/bin/brew.coffee", "-c", "-w", "server"])
-  client = coffee(["-r", "/Users/mark/bin/brew.coffee", "-c", "-o", "public/javascripts/client", "-w", "client"])
+  server = coffee(["-r", "./cakefile.coffee", "-c", "-w", "server"])
+  client = coffee(["-r", "./cakefile.coffee", "-c", "-o", "public/javascripts/client", "-w", "client"])
 
 task "compile", "Compile .coffee files.", (options) ->
-  server = coffee(["-r", "/Users/mark/bin/brew.coffee", "-c", "server"])
-  client = coffee(["-r", "/Users/mark/bin/brew.coffee", "-c", "-o", "public/javascripts/client", "client"])
+  server = coffee(["-r", "./cakefile.coffee", "-c", "server"])
+  client = coffee(["-r", "./cakefile.coffee", "-c", "-o", "public/javascripts/client", "client"])
 
 task "node", "Run the server.", (options) ->
   invoke("compile")

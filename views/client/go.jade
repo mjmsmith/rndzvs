@@ -1,7 +1,10 @@
-script
-  window.userObj = !{JSON.stringify(user)}
-  window.eventObj = !{JSON.stringify(event)}
-script(src="/javascripts/client/GoApp.js")
+extends layout
 
-h1 #{event.name}
-#window(style="width:100%; height:100%")
+block content
+  script
+    window.userObj = !{JSON.stringify(user)}
+    window.eventObj = !{JSON.stringify(event)}
+  script(src="/javascripts/client/GoApp.js")
+  
+  h1 #{event.name}
+  #window(style="width:100%; height:100%")

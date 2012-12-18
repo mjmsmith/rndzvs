@@ -1,11 +1,14 @@
+extends layout
+
 h1 rndzvs
 
-div(style="text-align:center; padding:10px")
-  input(id="create", type="button", value="Create an event", style="font-size:20pt", onclick="window.location='/create'")
-
-- if (events.length)
-  div Events
-  ul
-  - each event in events
-    div
-      input(id="create", type="button", value="#{event.name}", onclick="window.location='/go/#{event.code}'")
+block content
+  div(style="text-align:center; padding:10px")
+    input(id="create", type="button", value="Create an event", style="font-size:20pt", onclick="window.location='/create'")
+  
+  - if (events.length)
+    div Events
+    ul
+    - each event in events
+      div
+        input(id="create", type="button", value="#{event.name}", onclick="window.location='/go/#{event.code}'")

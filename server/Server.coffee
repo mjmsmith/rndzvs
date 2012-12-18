@@ -1,12 +1,11 @@
-Express = require("express")
+express = require("express")
 Db = require("./Db")
 argv = require("optimist").default("port", 3000).argv
 
 Event = Db.Event
 User = Db.User
-
 class exports.Server
-
+  
   @cookieMaxAge: 10*24*60*60*1000
 
   _server: null
@@ -38,25 +37,25 @@ class exports.Server
       res.redirect("/")
 
   createServer: ->
-    server = Express.createServer()
+    server = express()
 
     server.configure =>
       server.set("views", @rootDir() + "/views")
       server.set("view engine", "jade")
-      server.use(Express.logger({ format: ":method :url :status :response-time ms" }))
-      server.use(Express.bodyParser())
-      server.use(Express.methodOverride())
-      server.use(Express.cookieParser())
-      server.use(Express.session({ store: Db.sessionDb, secret: "secret", cookie: { maxAge: Server.cookieMaxAge } })) # TODO
+      server.use(express.logger({ format: ":method :url :status :response-time ms" }))
+      server.use(express.bodyParser())
+      server.use(express.methodOverride())
+      server.use(express.cookieParser())
+      server.use(express.session({ store: Db.sessionDb, secret: "secret", cookie: { maxAge: Server.cookieMaxAge } })) # TODO
       server.use(require("stylus").middleware({ src: @rootDir() + "/public" }))
       server.use(server.router)
-      server.use(Express.static(@rootDir() + "/public"))
+      server.use(express.static(@rootDir() + "/public"))
 
     server.configure "development", =>
-      server.use(Express.errorHandler({ dumpExceptions: true, showStack: true }))
+      server.use(express.errorHandler({ dumpExceptions: true, showStack: true }))
 
     server.configure "production", =>
-      server.use(Express.errorHandler())
+      server.use(express.errorHandler())
 
     # Routes.
 

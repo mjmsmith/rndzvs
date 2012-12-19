@@ -3,7 +3,7 @@
   "preferGlobal": "false",
   "version": "1.0.0",
   "author": "Mark Smith <mark@camazotz.com>",
-  "description": "Adhoc event invitation and tracking",
+  "description": "Adhoc event invitation and location tracking",
   "contributors": [ 
   ],
   "bin": {

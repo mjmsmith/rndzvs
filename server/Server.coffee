@@ -1,6 +1,8 @@
+connectCoffeeScript = require("connect-coffee-script")
 express = require("express")
 Db = require("./Db")
 argv = require("optimist").default("port", 3000).argv
+path = require("path")
 
 Event = Db.Event
 User = Db.User
@@ -48,8 +50,13 @@ class exports.Server
       server.use(express.cookieParser())
       server.use(express.session({ store: Db.sessionDb, secret: "secret", cookie: { maxAge: Server.cookieMaxAge } })) # TODO
       server.use(require("stylus").middleware({ src: @rootDir() + "/public" }))
-      server.use(server.router)
+      server.use(connectCoffeeScript({
+        src: @rootDir()
+        dest: path.join(@rootDir(), "/public/javascripts")
+        prefix: "/javascripts"
+      }))
       server.use(express.static(@rootDir() + "/public"))
+      server.use(server.router)
 
     server.configure "development", =>
       server.use(express.errorHandler({ dumpExceptions: true, showStack: true }))

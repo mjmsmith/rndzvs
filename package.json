@@ -20,6 +20,7 @@
   ],
   "dependencies" : {
     "coffee-script": "1.4.0",
+    "connect-coffee-script": "0.0.8",
     "connect-mongo": "0.2.0",
     "express": "3.0.4",
     "jade": "0.27.7",
@@ -34,6 +35,6 @@
   ],
   "license": "MIT",
   "engine": {
-    "node": ">=0.6"
+    "node": ">=0.8"
   }
 }

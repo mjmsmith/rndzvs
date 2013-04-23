@@ -1,14 +1,20 @@
-extends layout
-
-h1 rndzvs
-
-block content
-  div(style="text-align:center; padding:10px")
-    input(id="create", type="button", value="Create an event", style="font-size:20pt", onclick="window.location='/create'")
-  
-  - if (events.length)
-    div Events
-    ul
-    - each event in events
-      div
-        input(id="create", type="button", value="#{event.name}", onclick="window.location='/go/#{event.code}'")
+!!! 5
+html
+  head
+    meta(name="viewport", content="initial-scale=1.0, user-scalable=no")
+    title rndzvs
+    link(rel="stylesheet", href="/stylesheets/style.css")
+    script(src="//ajax.googleapis.com/ajax/libs/jquery/1.6.4/jquery.min.js")
+  body
+    h1 rndzvs
+    
+    block content
+      div(style="text-align:center; padding:10px")
+        input(id="create", type="button", value="Create an event", style="font-size:20pt", onclick="window.location='/create'")
+      
+      - if (events.length)
+        div Events
+        ul
+        - each event in events
+          div
+            input(id="create", type="button", value="#{event.name}", onclick="window.location='/go/#{event.code}'")

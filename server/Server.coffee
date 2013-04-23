@@ -1,3 +1,6 @@
+async = require("async")
+fs = require("fs")
+jade = require("jade")
 connectCoffeeScript = require("connect-coffee-script")
 express = require("express")
 Db = require("./Db")
@@ -12,10 +15,15 @@ class exports.Server
 
   _server: null
   _rootDir: null
+  _templatesSrc: null
 
   # Public.
 
   constructor: (rootDir) ->
+    @compileTemplates "#{rootDir}/templates/", (err, source) ->
+      throw err if err
+      @_templatesSrc = source
+    
     @_rootDir = rootDir
     @_server = @createServer()
 
@@ -26,6 +34,22 @@ class exports.Server
     @_rootDir
 
   # Private.
+
+  compileTemplates: (templatesDir, cb) ->
+    js = "var Templates = {}; \n\n"
+
+    fs.readdir templatesDir, (err, files) ->
+      jadeFiles = files.filter (file) -> file.substr(-5) == ".jade"
+
+      compileTemplate = (file, cb) ->
+        key = file.substr(0, file.indexOf("."))
+        filePath = templatesDir + file
+        fs.readFile filePath, (err, src) ->
+          options = { debug: false, client: true, filename: filePath }
+          js += "Templates.#{key} = #{jade.compile(src, options)}; \n\n"
+          cb(err)
+
+      async.each jadeFiles, compileTemplate, (err) -> cb(err, js)
 
   loadSessionUser: (req, res, next) ->
     if req.session.userId
@@ -75,14 +99,14 @@ class exports.Server
           })
 
     server.get "/create", (req, res) ->
-      res.render("client/create", {
+      res.render("create", {
         title: "rndvz"
       })
 
     server.get "/join/:code", (req, res) ->
       Event.findOne { code: req.params.code }, (err, event) ->
         if event
-          res.render("client/join", {
+          res.render("join", {
             title: "rndvz"
             event: event.toBackboneJSON()
           })
@@ -95,7 +119,7 @@ class exports.Server
           if req.session.userIds
             User.findOne { _id: { $in: req.session.userIds }, event: event._id }, (err, user) ->
               if user
-                res.render("client/go", {
+                res.render("go", {
                   user: user.toBackboneJSON()
                   event: event.toBackboneJSON()
                   title: event.name
@@ -167,6 +191,12 @@ class exports.Server
       User.remove { _id: req.params.id }, (err, count) ->
         req.session.userIds = (id for id in req.session.userIds where id != req.params.id)
         res.send(JSON.stringify(!err && count == 1))
+
+    # Misc routes.
+
+    server.get "/javascripts/client/Templates.js", (req, res) ->
+      res.set("Content-Type", "application/javascript")
+      res.send(@_templatesSrc)
 
     server.listen(argv.port)
     console.log("running on port #{argv.port}...")

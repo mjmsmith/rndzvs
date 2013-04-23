@@ -1,16 +1,6 @@
 class SelectPlaceView extends BaseView
 
-  el: """
-    <div style="width:100%; height:100%; text-align:center">
-      <div style="padding:8px 0; border-bottom:1px solid #aa9d93">
-        <input id="search" style="width:90%" placeholder="Enter a business, attraction, address..." autocorrect="off">
-      </div>
-      <div id="map" style="width:100%; height:100%">Getting your location...</div>
-    </div>"""
-
-  infoTemplate: _.template("""<div style="font-weight:bold">={place.name}</div>
-                              <div>={place.vicinity}</div>
-                              <div><input id="use" type="button" value="This is the place"></div>""")
+  el: Templates.SelectPlaceView()
   map: null
   autocomplete: null
   marker: null
@@ -68,7 +58,7 @@ class SelectPlaceView extends BaseView
     })
     google.maps.event.addListener(@marker, "click", () => @infoWindow.open(@map, @marker))
 
-    @infoWindow = new google.maps.InfoWindow(content: @infoTemplate({ @place }))
+    @infoWindow = new google.maps.InfoWindow(content: Templates.SelectPlaceInfoView("place": @place))
     @infoWindow.open(@map, @marker)
 
     @searchInput.val("")

@@ -1,14 +1,8 @@
 extends layout
 
 block content
-  script(type="text/html", id="select-place-template")
-    div(style="width:100%; height:100%; text-align:center")
-      div(style="padding:8px 0; border-bottom:1px solid #aa9d93")
-        input(id="search", style="width:90%", placeholder="Enter a business, attraction, address...", autocorrect="off")
-      div(id="map", style="width:100%; height:100%")
-        | Getting your location...
-
-  script(src="/javascripts/client/CreateApp.js")
+  script(src="/javascripts/client/views/CreateApp.js")
+  script(src="/javascripts/client/apps/CreateApp.js")
   
   h1#title New Event
   #window(style="width:100%; height:100%")

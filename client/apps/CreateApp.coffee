@@ -77,26 +77,7 @@ class SelectPlaceView extends BaseView
 
 class CreateEventView extends BaseView
 
-  el: """
-    <div style="margin:8px">
-      <div style="margin:0 0 2px 0"><label for="name">event name</label></div>
-      <div style="margin-right:4px"><input id="name" class="required" name="name" style="margin:0; padding:0; width:100%"></div>
-      <div style="margin:4px 0 2px 0"><label for="place">place</label></div>
-      <div style="margin-right:4px"><input id="place" class="required" name="place" style="margin:0; padding:0; width:100%"></div>
-      <div style="margin:4px 0 2px 0"><label for="address">address</label></div>
-      <div style="margin-right:4px"><input id="address" class="required" name="address" style="margin:0; padding:0; width:100%"></div>
-      <div style="margin:4px 0 2px 0"><label for="dateDay">when</label></div>
-      <div>
-        <select id="dateDay"></select>
-        at
-        <select id="dateHour"></select>
-        :
-        <select id="dateMinute"></select>
-        <select id="dateAmPm"></select>
-      </div>
-      <div style="margin-top:12px"><input id="create" type="button" value="This is the event"></div>
-    </div>"""
-
+  el: Templates.CreateEventView()
 
   elements:
     "#name": "nameInput"
@@ -176,14 +157,7 @@ class CreateEventView extends BaseView
 
 class CreateUserView extends BaseView
 
-  el: """
-    <div style="margin:8px">
-      <div style="margin:0 0 2px 0"><label for="name">your name</label></div>
-      <div style="margin-right:4px"><input id="name" class="required" name="name" style="margin:0; padding:0; width:100%"></div>
-      <div style="margin:4px 0 2px 0"><label for="phone">phone (optional)</label></div>
-      <div style="margin-right:4px"><input id="phone" name="phone" style="margin:0; padding:0; width:100%"></div>
-      <div style="margin-top:12px"><input id="create" type="button" value="This is me"></div>
-    </div>"""
+  el: Templates.CreateUserView()
 
   elements:
     "#name": "nameInput"
@@ -221,14 +195,7 @@ class CreateUserView extends BaseView
 
 class ExitView extends BaseView
 
-  el: """
-    <div style="margin:8px">
-      <div id="link"></div>
-      <div>
-        <input id="email" type="button" value="Email the event link">
-        <input id="go" type="button" value="Go to the event link">
-      </div>
-    </div>"""
+  el: Templates.ExitView()
 
   elements:
     "#link": "linkDiv"

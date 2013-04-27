@@ -1,13 +1,6 @@
 class JoinView extends BaseView
 
-  el: """
-    <div style="margin:8px">
-      <div style="margin:0 0 2px 0"><label for="name">your name</label></div>
-      <div style="margin-right:4px"><input id="name" class="required" name="name" style="margin:0; padding:0; width:100%"></div>
-      <div style="margin:4px 0 2px 0"><label for="phone">phone (optional)</label></div>
-      <div style="margin-right:4px"><input id="phone" name="phone" style="margin:0; padding:0; width:100%"></div>
-      <div style="margin-top:12px"><input id="join" type="button" value="This is me"></div>
-    </div>"""
+  el: Templates.JoinView()
 
   elements:
     "#name": "nameInput"

@@ -1,10 +1,3 @@
-# Underscore templates.
-
-_.templateSettings = {
-  interpolate: /[!]{([\s\S]+?)}/g
-  escape: /[=]{([\s\S]+?)}/g
-}
-
 # Base classes.
 
 class BaseModel extends Backbone.Model

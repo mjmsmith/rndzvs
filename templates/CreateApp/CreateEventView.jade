@@ -1,0 +1,25 @@
+div(style="margin:8px")
+  div(style="margin:0 0 2px 0")
+    label(for="name") event name
+  div(style="margin-right:4px")
+    input#name.required(name="name", style="margin:0; padding:0; width:100%")
+  div(style="margin:4px 0 2px 0")
+    label(for="place") place
+  div(style="margin-right:4px")
+    input#place.required(name="place", style="margin:0; padding:0; width:100%")
+  div(style="margin:4px 0 2px 0")
+    label(for="address") address
+  div(style="margin-right:4px")
+    input#address.required(name="address", style="margin:0; padding:0; width:100%")
+  div(style="margin:4px 0 2px 0")
+    label(for="dateDay") when
+  div(style="margin-right:4px")
+    select#dateDay
+    |  at 
+    select#dateHour
+    |  : 
+    select#dateMinute
+    |  
+    select#dateAmPm
+  div(style="margin-top:12px")
+    input#create(type="button", value="This is the event")

@@ -1,27 +1,6 @@
 class EventView extends BaseView
 
-  userOptionTemplate: _.template("""<option value="={user.id}">={user.get("name")}</option>""")
-  placeInfoTemplate: _.template("""<div>={App.event().get("place")}</div>""")
-  nameInfoTemplate: _.template("""<div>={user.get("name")}</div>""")
-  phoneInfoTemplate: _.template("""<div style="margin-top:4px">
-                                     <input type="button" value="Call" style="font-size:10pt" onclick="window.location='tel:={user.get("phone")}'">
-                                     <input type="button" value="SMS" style="font-size:10pt"onclick="window.location='sms:={user.get("phone")}'">
-                                   </div>""")
-
-  el: """
-    <div style="width:100%; height:100%">
-      <div style="padding:8px 4px; border-bottom:1px solid #aa9d93">
-        <div id="details" style="text-align:center; cursor:pointer">
-          <div id="place" style="font-weight:bold"></div>
-          <div id="address"></div>
-          <div id="date"></div>
-        </div>
-      </div>
-      <div id="map" style="width:100%; height:100%">
-        <div style="position:absolute; top:8px; right:8px; z-index:1000"><select id="users"><option disabled="true">who's where?</option></select></div>
-      </div>
-    </div>"""
-
+  el: Templates.EventView({user: window.userObj})
   map: null
   placeMarker: null
   users: null

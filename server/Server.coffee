@@ -1,30 +1,30 @@
-async = require("async")
-fs = require("fs")
-jade = require("jade")
+argv = require("optimist").default("port", 3000).argv
 connectCoffeeScript = require("connect-coffee-script")
 express = require("express")
-Db = require("./Db")
-argv = require("optimist").default("port", 3000).argv
+fs = require("fs")
+jade = require("jade")
 path = require("path")
 
+Db = require("./Db")
 Event = Db.Event
 User = Db.User
+
 class exports.Server
   
   @cookieMaxAge: 10*24*60*60*1000
 
   _server: null
   _rootDir: null
-  _templatesSrc: null
+  _clientTemplates: {}
 
   # Public.
 
   constructor: (rootDir) ->
-    @compileTemplates "#{rootDir}/templates/", (err, source) ->
-      throw err if err
-      @_templatesSrc = source
-    
+    apps = fs.readdirSync(path.join(rootDir, "templates")).filter (file) ->
+      fs.statSync(path.join(rootDir, "templates", file)).isDirectory()
+
     @_rootDir = rootDir
+    @_clientTemplates[app] = @compileClientAppTemplates(path.join(rootDir, "templates", app)) for app in apps
     @_server = @createServer()
 
   server: () ->
@@ -35,22 +35,24 @@ class exports.Server
 
   # Private.
 
-  compileTemplates: (templatesDir, cb) ->
-    js = "var Templates = {}; \n\n"
+  compileClientAppTemplates: (dir) ->
+    js = ""
+    files = fs.readdirSync(dir).filter (file) -> file.substr(-5) == ".jade"
 
-    fs.readdir templatesDir, (err, files) ->
-      jadeFiles = files.filter (file) -> file.substr(-5) == ".jade"
+    for file in files
+      view = file.substr(0, file.indexOf("."))
+      filePath = path.join(dir, file)
+      fileContents = fs.readFileSync(filePath, "utf8")
+      parts = fileContents.split(/^[/][/]-\W?([^.]+)[.]jade$/mg)
+      parts.unshift(view)
 
-      compileTemplate = (file, cb) ->
-        key = file.substr(0, file.indexOf("."))
-        filePath = templatesDir + file
-        fs.readFile filePath, (err, src) ->
-          options = { debug: false, client: true, filename: filePath }
-          js += "Templates.#{key} = #{jade.compile(src, options)}; \n\n"
-          cb(err)
-
-      async.each jadeFiles, compileTemplate, (err) -> cb(err, js)
-
+      i = 0
+      while i < parts.length
+        options = { debug: false, client: true, filename: filePath }
+        js += "#{parts[i++]}: #{jade.compile(parts[i++], options)},\n"
+        
+     "Templates = {\n#{js}\n};"
+  
   loadSessionUser: (req, res, next) ->
     if req.session.userId
       User.findById req.session.userId, (err, user) ->
@@ -66,20 +68,20 @@ class exports.Server
     server = express()
 
     server.configure =>
-      server.set("views", @rootDir() + "/views")
+      server.set("views", path.join(@rootDir(), "views"))
       server.set("view engine", "jade")
       server.use(express.logger({ format: ":method :url :status :response-time ms" }))
       server.use(express.bodyParser())
       server.use(express.methodOverride())
       server.use(express.cookieParser())
       server.use(express.session({ store: Db.sessionDb, secret: "secret", cookie: { maxAge: Server.cookieMaxAge } })) # TODO
-      server.use(require("stylus").middleware({ src: @rootDir() + "/public" }))
+      server.use(require("stylus").middleware({ src: path.join(@rootDir(), "public") }))
       server.use(connectCoffeeScript({
         src: @rootDir()
-        dest: path.join(@rootDir(), "/public/javascripts")
+        dest: path.join(@rootDir(), "public", "javascripts")
         prefix: "/javascripts"
       }))
-      server.use(express.static(@rootDir() + "/public"))
+      server.use(express.static(path.join(@rootDir(), "public")))
       server.use(server.router)
 
     server.configure "development", =>
@@ -194,9 +196,9 @@ class exports.Server
 
     # Misc routes.
 
-    server.get "/javascripts/client/Templates.js", (req, res) ->
+    server.get "/javascripts/client/views/:app.js", (req, res) =>
       res.set("Content-Type", "application/javascript")
-      res.send(@_templatesSrc)
+      res.send(@_clientTemplates[req.params.app])
 
     server.listen(argv.port)
     console.log("running on port #{argv.port}...")

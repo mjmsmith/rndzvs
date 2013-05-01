@@ -20,11 +20,11 @@ class exports.Server
   # Public.
 
   constructor: (rootDir) ->
-    apps = fs.readdirSync(path.join(rootDir, "templates")).filter (file) ->
-      fs.statSync(path.join(rootDir, "templates", file)).isDirectory()
+    apps = fs.readdirSync(path.join(rootDir, "client", "views")).filter (file) ->
+      fs.statSync(path.join(rootDir, "client", "views", file)).isDirectory()
 
     @_rootDir = rootDir
-    @_clientTemplates[app] = @compileClientAppTemplates(path.join(rootDir, "templates", app)) for app in apps
+    @_clientTemplates[app] = @compileClientAppTemplates(path.join(rootDir, "client", "views", app)) for app in apps
     @_server = @createServer()
 
   server: () ->

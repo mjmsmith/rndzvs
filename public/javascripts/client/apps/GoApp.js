@@ -21,7 +21,7 @@
     }
 
     EventView.prototype.el = Templates.EventView({
-      user: window.userObj
+      user: App.user()
     });
 
     EventView.prototype.map = null;
@@ -102,7 +102,7 @@
       _results = [];
       for (_j = 0, _len1 = _ref2.length; _j < _len1; _j++) {
         user = _ref2[_j];
-        _results.push(this.usersSelect.append(this.userOptionTemplate({
+        _results.push(this.usersSelect.append(Templates.UserOption({
           user: user
         })));
       }
@@ -137,8 +137,8 @@
         return this.infoWindow.open(this.map, this.userMarkers[user.id]);
       } else {
         this.infoWindow = new google.maps.InfoWindow({
-          content: this.placeInfoTemplate({
-            App: App
+          content: Templates.PlaceInfo({
+            event: App.event()
           })
         });
         return this.infoWindow.open(this.map, this.placeMarker);
@@ -170,11 +170,11 @@
     EventView.prototype.infoWindowForUser = function(user) {
       var content;
 
-      content = this.nameInfoTemplate({
+      content = this.Templates.NameInfo({
         user: user
       });
       if (user.get("phone")) {
-        content += this.phoneInfoTemplate({
+        content += this.Templates.PhoneInfo({
           user: user
         });
       }

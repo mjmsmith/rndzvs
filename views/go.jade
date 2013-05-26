@@ -1,7 +1,7 @@
 extends layout
 
 block content
-  script
+  script.
     window.userObj = !{JSON.stringify(user)}
     window.eventObj = !{JSON.stringify(event)}
   script(src="/javascripts/client/views/GoApp.js")

@@ -8,10 +8,13 @@ ObjectId = Schema.ObjectId
 # Events.
 
 EventSchema = new Schema({
-  createdAt: { type: Date, default: -> new Date() }
+  createdAt: {
+    type: Date
+    "default": -> new Date()
+  }
   code: {
     type: String
-    default: -> ("abcdefghjkmnpqrstuvwxyz23456789"[Math.floor(Math.random()*31)] for i in [0..10]).join("")
+    "default": -> ("abcdefghjkmnpqrstuvwxyz23456789"[Math.floor(Math.random()*31)] for i in [0..10]).join("")
     unique: true
   }
   name: String
@@ -35,7 +38,10 @@ exports.Event = Mongoose.model("Event", EventSchema)
 # Users.
 
 UserSchema = new Schema({
-  createdAt: { type: Date, default: -> new Date() }
+  createdAt: {
+    type: Date
+    "default": -> new Date()
+  }
   updatedAt: Date
   name: String
   phone: String

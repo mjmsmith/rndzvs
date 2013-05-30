@@ -50,8 +50,8 @@ class exports.Server
       while i < parts.length
         options = { debug: false, client: true, filename: filePath }
         js += "#{parts[i++]}: #{jade.compile(parts[i++], options)},\n"
-        
-     "Templates = {\n#{js}\n};"
+
+    "Templates = {\n#{js}\n};"
   
   loadSessionUser: (req, res, next) ->
     if req.session.userId

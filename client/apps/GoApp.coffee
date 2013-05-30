@@ -1,6 +1,6 @@
 class EventView extends BaseView
 
-  el: Templates.EventView(user: App.user())
+  el: Templates.EventView()
   map: null
   placeMarker: null
   users: null
@@ -127,8 +127,8 @@ class EventView extends BaseView
     })
 
   infoWindowForUser: (user) ->
-    content = @Templates.NameInfo({ user })
-    content += @Templates.PhoneInfo({ user }) if user.get("phone")
+    content = Templates.NameInfo({ user })
+    content += Templates.PhoneInfo({ user }) if user.get("phone")
     new google.maps.InfoWindow({ content })
 
   onTimeout: () =>

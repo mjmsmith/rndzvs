@@ -33,8 +33,8 @@ class @EventModel extends BaseModel
     else if hour > 12
       hour -= 12
 
-    title = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][date.getDay()] +
-            " #{hour}:#{("0"+date.getMinutes()).slice(-2)} #{ampm}"
+    ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"][date.getDay()] +
+    " #{hour}:#{("0"+date.getMinutes()).slice(-2)} #{ampm}"
 
 class @EventCollection extends BaseCollection
 
@@ -73,7 +73,7 @@ class @BaseView extends Backbone.View
     null
 
   blink: (element, count) ->
-    return if !count--
+    return if !(count--)
     $(element).fadeOut "fast", () =>
       $(element).fadeIn "fast", () =>
         @blink(element, count)

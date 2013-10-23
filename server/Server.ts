@@ -15,11 +15,11 @@ var Event = Db.Event;
 var User = Db.User;
 
 interface ExpressSession {
-    userId: string;
-    userIds : string[];
+  userId: string;
+  userIds: string[];
 }
 
-class Server
+export class Server
 {
   static cookieMaxAge: number = 10*24*60*60*1000;
 
@@ -57,7 +57,7 @@ class Server
     var js = "";
     var files = fs.readdirSync(dir).filter((file: string) => { return file.substr(-5) === ".jade"; });
 
-    files.forEach(function(file) {
+    files.forEach((file: string) => {
       var view = file.substr(0, file.indexOf("."));
       var filePath = path.join(dir, file);
       var options = { debug: false, client: true, filename: filePath };
@@ -74,9 +74,9 @@ class Server
     return util.format("Templates = {\n%s\n};", js);
   }
   
-  private static loadSessionUser(req, res, next) {
-    if (req.session.userId) {
-      User.findById(req.session.userId, function(err, user) {
+  private static loadSessionUser(req: ExpressServerRequest, res: ExpressServerResponse, next) {
+    if ((<any>req.session).userId) {
+      User.findById((<any>req.session).userId, function(err, user) {
         if (user) {
           req.user = user;
           next();
@@ -122,8 +122,8 @@ class Server
     
     // Routes.
   
-    server.get("/", function(req, res) {
-      User.find({ _id: { $in: (req.session.userIds ? req.session.userIds : []) } }, function(err, users) : void {
+    server.get("/", function(req: ExpressServerRequest, res: ExpressServerResponse) {
+      User.find({ _id: { $in: ((<any>req.session).userIds ? (<any>req.session).userIds : []) } }, function(err, users) : void {
         Event.find({ _id: { $in: (users.map(function(user) { return user.event; })) } }, function(err, events) {
           res.render("index", {
             events: events
@@ -132,13 +132,13 @@ class Server
       });
     });
       
-    server.get("/create", function(req, res) {
+    server.get("/create", function(req: ExpressServerRequest, res: ExpressServerResponse) {
       res.render("create", {
         title: "rndvz"
       });
     });
 
-    server.get("/join/:code", function(req, res) {
+    server.get("/join/:code", function(req: ExpressServerRequest, res: ExpressServerResponse) {
       Event.findOne({ code: req.params.code }, function(err, event) {
         if (event) {
           res.render("join", {
@@ -152,11 +152,11 @@ class Server
       });
     });
 
-    server.get("/go/:code", function(req, res) {
+    server.get("/go/:code", function(req: ExpressServerRequest, res: ExpressServerResponse) {
       Event.findOne({ code: req.params.code }, function(err, event) {
         if (event) {
-          if (req.session.userIds) {
-            User.findOne({ _id: { $in: req.session.userIds }, event: event._id }, function(err, user) : void {
+          if ((<any>req.session).userIds) {
+            User.findOne({ _id: { $in: (<any>req.session).userIds }, event: event._id }, function(err, user) : void {
               if (user) {
                 res.render("go", {
                   user: user.toBackboneJSON(),
@@ -170,7 +170,7 @@ class Server
             });
           }
           else {
-            res.redirect(util.format("/join/%s", req.params.code));
+            res.redirect(util.format("/join/%s", req.params["code"]));
           }
         }
         else {
@@ -181,27 +181,27 @@ class Server
     
     // Event routes.
 
-    server.get("/events", Server.loadSessionUser, function(req, res) {
+    server.get("/events", Server.loadSessionUser, function(req: ExpressServerRequest, res: ExpressServerResponse) {
       Event.find(req.query, function(err, events) {
         res.send(events.map(function(event) { return event.toJSON() }));
       });
     });
 
-    server.post("/events", function(req, res) {
+    server.post("/events", function(req: ExpressServerRequest, res: ExpressServerResponse) {
       var event = new Event(req.body);
       event.save(function(err, event) {
         res.send(event.toJSON());
       });
     });
 
-    server.get("/events/:id", function(req, res) {
+    server.get("/events/:id", function(req: ExpressServerRequest, res: ExpressServerResponse) {
       Event.findById(req.params.id, function(err, event) {
         res.send(event.toJSON());
       });
     });
      
 
-    server.put("/events/:id", function(req, res) {
+    server.put("/events/:id", function(req: ExpressServerRequest, res: ExpressServerResponse) {
       Event.findById(req.params.id, function(err, event) {
         Object.keys(req.body).forEach(function(key) {
           event[key] = req.body[key];
@@ -212,7 +212,7 @@ class Server
       });
     });
 
-    server.del("/events/:id", function(req, res) {
+    server.del("/events/:id", function(req: ExpressServerRequest, res: ExpressServerResponse) {
       Event.remove({ _id: req.params.id }, function(err, count) {
         res.send(JSON.stringify((!err && count === 1)));
       });
@@ -220,21 +220,21 @@ class Server
 
     // User routes.
 
-    server.get("/users", function(req, res) {
+    server.get("/users", function(req: ExpressServerRequest, res: ExpressServerResponse) {
       User.find(req.query, function(err, users) {
         res.send(users.map(function(user) { return user.toJSON() }));
       });
     });
 
-    server.post("/users", function(req, res) {
+    server.post("/users", function(req: ExpressServerRequest, res: ExpressServerResponse) {
       Event.findById(req.body["event"], function(err, event) {
         var user = new User(req.body);
         user.save(function(err, user) {
-          req.session.userId = user._id.toHexString();
-          if (!req.session.userIds) {
-            req.session.userIds = [];
+          (<any>req.session).userId = user._id.toString();
+          if (!(<any>req.session).userIds) {
+            (<any>req.session).userIds = [];
           }
-          req.session.userIds.push(req.session.userId);
+          (<any>req.session).userIds.push((<any>req.session).userId);
 
           if (!event.creator) {
             event.creator = user;
@@ -249,13 +249,13 @@ class Server
       });
     });
 
-    server.get("/users/:id", function(req, res) {
+    server.get("/users/:id", function(req: ExpressServerRequest, res: ExpressServerResponse) {
       User.findById(req.params.id, function(err, user) {
         res.send(user.toJSON());
       });
     });
 
-    server.put("/users/:id", function(req, res) {
+    server.put("/users/:id", function(req: ExpressServerRequest, res: ExpressServerResponse) {
       User.findById(req.params.id, function(err, user) {
         Object.keys(req.body).forEach(function(key) {
           user[key] = req.body[key];
@@ -266,22 +266,21 @@ class Server
       });
     });
 
-    server.del("/users/:id", function(req, res) {
+    server.del("/users/:id", function(req: ExpressServerRequest, res: ExpressServerResponse) {
       User.remove({ _id: req.params.id }, function(err, count) {
-        req.session.userIds = <string[]>req.session.userIds.filter(function(id) { return id != req.params.id; });
+        (<any>req.session).userIds = <string[]>(<any>req.session).userIds.filter(function(id) { return id != req.params.id; });
         res.send(JSON.stringify(<any>(!err && count === 1)));
       });
     });
 
     // Misc routes.
 
-    server.get("/javascripts/client/views/:app.js", (req, res) => {
+    server.get("/javascripts/client/views/:app.js", (req: ExpressServerRequest, res: ExpressServerResponse) => {
       res.set("Content-Type", "application/javascript");
       res.send(this._clientTemplates[req.params["app"]]);
     });
 
-
-    var port = optimist.default("port", 3000).argv.port;
+    var port = optimist.default("port", 3000).argv["port"];
 
     server.listen(port);
     console.log(util.format("running on port %d...", port));
@@ -289,5 +288,3 @@ class Server
     return server;
   }
 }
-
-exports.Server = Server;

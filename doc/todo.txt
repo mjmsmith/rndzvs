@@ -1,5 +1,0 @@
-Clean out old req.session userids.
-
-Can I select who's where on click?
-
-Validate non-optional fields.

@@ -1,4 +1,8 @@
 /.idea/
+/client/apps/*.js
+/client/apps/*.map
 /node_modules/
 /public/javascripts/client/apps/
 /public/stylesheets/*.css
+/server/*.js
+/server/*.map

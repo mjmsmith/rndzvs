@@ -23,6 +23,9 @@ div #{user.get("name")}
 
 //- PhoneInfo.jade
 
+//- Jade 0.3.5 chokes on triple-nested quotes.
+- var phone = user.get("phone")
+
 div(style="margin-top:4px")
-  input(type="button", value="Call", style="font-size:10pt", onclick="window.location='tel:=#{user.get(\"phone\")}'")
-  input(type="button", value="SMS", style="font-size:10pt", onclick="window.location='sms:=#{user.get(\"phone\")}'")
+  input(type="button", value="Call", style="font-size:10pt", onclick="window.location='tel:#{phone}'")
+  input(type="button", value="SMS", style="font-size:10pt", onclick="window.location='sms:#{phone}'")

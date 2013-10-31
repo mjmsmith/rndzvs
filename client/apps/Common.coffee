@@ -2,20 +2,7 @@
 
 class BaseModel extends Backbone.Model
 
-  parse: (obj) ->
-    if obj._id?
-      obj.id = obj._id
-      delete obj._id
-    super
-
 class BaseCollection extends Backbone.Collection
-
-  parse: (objs) ->
-    for obj in objs
-      if obj._id?
-        obj.id = obj._id
-        delete obj._id
-    super
 
 # Events.
 

@@ -22,7 +22,7 @@ class JoinView extends BaseView
     user = new UserModel({
       name: @nameInput.val()
       phone: @phoneInput.val().replace(/[^0-9]/g, "")
-      event: App.event().id
+      eventId: App.event().id
     })
     user.save(null, { success: @onSaveSuccess, error: @onSaveError })
 

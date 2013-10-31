@@ -1,27 +1,27 @@
 {
   "name": "rndzvs",
   "preferGlobal": "false",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "author": "Mark Smith <mark@camazotz.com>",
   "description": "Adhoc event invitation and location tracking",
   "contributors": [],
   "bin": {},
   "scripts": {
-    "start": "node ./App.js"
+    "start": "node index.js"
   },
-  "main": "./server/Server",
   "repository": {
     "type": "git",
     "url": "https://github.com/mjmsmith/rndzvs.git"
   },
   "keywords": [],
   "dependencies": {
+    "bookshelf": "0.5.7",
     "coffee-script": "1.6.2",
     "connect-coffee-script": "0.0.8",
-    "connect-mongo": "0.2.0",
+    "connect-mysql-session": "0.1.3",
     "express": "3.0.4",
-    "jade": "0.27.7",
-    "mongoose": "3.5.2",
+    "jade": "0.35.0",
+    "mysql": "2.0.0-alpha9",
     "optimist": "0.3.5",
     "stylus": "0.31.0"
   },
@@ -30,6 +30,6 @@
   "bundleDependencies": [],
   "license": "MIT",
   "engine": {
-    "node": ">=0.8"
+    "node": ">=0.10"
   }
 }

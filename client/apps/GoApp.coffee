@@ -56,8 +56,6 @@ class EventView extends BaseView
 
   fetchUsers: () ->
     @users.fetch({
-      data:
-        event: App.event().id
       success: @onFetchSuccess
       error: @onFetchError
     })

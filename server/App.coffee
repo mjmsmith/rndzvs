@@ -11,7 +11,7 @@ Event = db.Event
 User = db.User
 MySqlSessionStore = connectMySqlSession(express)
 
-class Server
+class App
   
   @cookieMaxAge: 10*24*60*60*1000
 
@@ -28,12 +28,6 @@ class Server
     @_rootDir = rootDir
     @_clientTemplates[app] = @compileClientAppTemplates(path.join(rootDir, "client", "views", app)) for app in apps
     @_server = @createServer()
-
-  server: () ->
-    @_server
-
-  rootDir: () ->
-    @_rootDir
 
   # Private.
 
@@ -78,7 +72,7 @@ class Server
     server = express()
 
     server.configure =>
-      server.set("views", path.join(@rootDir(), "views"))
+      server.set("views", path.join(@_rootDir, "views"))
       server.set("view engine", "jade")
       server.use(express.logger({ format: ":method :url :status :response-time ms" }))
       server.use(express.bodyParser())
@@ -87,15 +81,15 @@ class Server
       server.use(express.session({
                                     store: new MySqlSessionStore("rndzvs", process.env.MYSQL_USER, process.env.MYSQL_PASSWORD, {})
                                     secret: "secret"
-                                    cookie: { maxAge: Server.cookieMaxAge }
+                                    cookie: { maxAge: App.cookieMaxAge }
                                   }))
-      server.use(require("stylus").middleware({ src: path.join(@rootDir(), "public") }))
+      server.use(require("stylus").middleware({ src: path.join(@_rootDir, "public") }))
       server.use(connectCoffeeScript({
-        src: @rootDir()
-        dest: path.join(@rootDir(), "public", "javascripts")
+        src: @_rootDir
+        dest: path.join(@_rootDir, "public", "javascripts")
         prefix: "/javascripts"
       }))
-      server.use(express.static(path.join(@rootDir(), "public")))
+      server.use(express.static(path.join(@_rootDir, "public")))
       server.use(server.router)
 
     server.configure "development", =>
@@ -238,4 +232,4 @@ class Server
 
     return server
 
-  module.exports = Server
+  module.exports = App

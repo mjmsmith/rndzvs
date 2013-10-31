@@ -1,4 +1,4 @@
 require("coffee-script");
-Server = require("./server/Server");
+App = require("./server/App");
 
-new Server(__dirname);
+new App(__dirname);

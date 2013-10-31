@@ -1,2 +1,4 @@
 require("coffee-script");
-new (require("./server/Server").Server)(__dirname);
+Server = require("./server/Server");
+
+new Server(__dirname);

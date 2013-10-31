@@ -5,7 +5,7 @@ express = require("express")
 fs = require("fs")
 jade = require("jade")
 path = require("path")
-db = require("./Db")
+db = require("./db")
 
 Event = db.Event
 User = db.User
@@ -236,8 +236,6 @@ class Server
     server.listen(argv.port)
     console.log("running on port #{argv.port}...")
 
-    server
+    return server
 
-  module.exports = {
-    Server
-  }
+  module.exports = Server

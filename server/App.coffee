@@ -1,5 +1,6 @@
 argv = require("optimist").default("port", 3000).argv
 connectCoffeeScript = require("connect-coffee-script")
+connectJadeClient = require("connect-jade-client")
 connectMySqlSession = require("connect-mysql-session")
 express = require("express")
 fs = require("fs")
@@ -17,38 +18,15 @@ class App
 
   _server: null
   _rootDir: null
-  _clientTemplates: {}
 
   # Public.
 
   constructor: (rootDir) ->
-    apps = fs.readdirSync(path.join(rootDir, "client", "views")).filter (file) ->
-      fs.statSync(path.join(rootDir, "client", "views", file)).isDirectory()
-
     @_rootDir = rootDir
-    @_clientTemplates[app] = @compileClientAppTemplates(path.join(rootDir, "client", "views", app)) for app in apps
     @_server = @createServer()
 
   # Private.
 
-  compileClientAppTemplates: (dir) ->
-    js = ""
-    files = fs.readdirSync(dir).filter (file) -> file.substr(-5) == ".jade"
-
-    for file in files
-      view = file.substr(0, file.indexOf("."))
-      filePath = path.join(dir, file)
-      fileContents = fs.readFileSync(filePath, "utf8")
-      parts = fileContents.split(/^[/][/]-\W?([^.]+)[.]jade$/mg)
-      parts.unshift(view)
-
-      i = 0
-      while i < parts.length
-        options = { debug: false, client: true, filename: filePath }
-        js += "#{parts[i++]}: #{jade.compile(parts[i++], options)},\n"
-
-    "Templates = {\n#{js}\n};"
-  
   loadSessionUser: (req, res, next) =>
     if req.session.activeUserId
       new User(id: req.session.activeUserId).fetch().then(
@@ -79,15 +57,20 @@ class App
       server.use(express.methodOverride())
       server.use(express.cookieParser())
       server.use(express.session({
-                                    store: new MySqlSessionStore("rndzvs", process.env.MYSQL_USER, process.env.MYSQL_PASSWORD, {})
-                                    secret: "secret"
-                                    cookie: { maxAge: App.cookieMaxAge }
-                                  }))
+        store: new MySqlSessionStore("rndzvs", process.env.MYSQL_USER, process.env.MYSQL_PASSWORD, {})
+        secret: "secret"
+        cookie: { maxAge: App.cookieMaxAge }
+      }))
       server.use(require("stylus").middleware({ src: path.join(@_rootDir, "public") }))
       server.use(connectCoffeeScript({
         src: @_rootDir
         dest: path.join(@_rootDir, "public", "javascripts")
         prefix: "/javascripts"
+      }))
+      server.use(connectJadeClient({
+        rootDirPath: path.join(@_rootDir, "client", "views")
+        rootUrlPath: "/javascripts/client/views"
+        templatesVarName: "Templates"
       }))
       server.use(express.static(path.join(@_rootDir, "public")))
       server.use(server.router)
@@ -220,12 +203,6 @@ class App
       new User(id: req.params.id).destroy()
       req.session.userIds = (id for id in req.session.userIds if id != req.params.id)
       res.send(JSON.stringify(true))
-
-    # Misc routes.
-
-    server.get "/javascripts/client/views/:app.js", (req, res) =>
-      res.set("Content-Type", "application/javascript")
-      res.send(@_clientTemplates[req.params.app])
 
     server.listen(argv.port)
     console.log("running on port #{argv.port}...")

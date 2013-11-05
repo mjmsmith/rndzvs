@@ -150,6 +150,7 @@ class CreateEventView extends BaseView
     event.save(null, { success: @onSaveSuccess, error: @onSaveError })
 
   onSaveSuccess: (event, response) =>
+    App.event(event)
     App.activateView(new CreateUserView())
 
   onSaveError: (event, response) =>
@@ -188,6 +189,7 @@ class CreateUserView extends BaseView
     user.save(null, { success: @onSaveSuccess, error: @onSaveError })
 
   onSaveSuccess: (user, response) =>
+    App.user(user)
     App.activateView(new ExitView())
 
   onSaveError: (user, response) =>

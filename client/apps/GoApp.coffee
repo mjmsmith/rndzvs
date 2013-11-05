@@ -65,7 +65,7 @@ class EventView extends BaseView
       @updateUserMarker(user) if user.get("latitude") && user.get("longitude")
 
     @usersSelect.html("""<option disabled="true">who's where?</option>""")
-    @usersSelect.append(Templates.UserOption({ user })) for user in @users.models
+    @usersSelect.append(Templates.EventView.UserOption({ user })) for user in @users.models
 
   updateUserMarker: (user) ->
     marker = @userMarkers[user.id]
@@ -86,7 +86,7 @@ class EventView extends BaseView
       @infoWindow.open(@map, @userMarkers[user.id])
     else
       @infoWindow = new google.maps.InfoWindow({
-        content: Templates.PlaceInfo({ event: App.event() })
+        content: Templates.EventView.PlaceInfo({ event: App.event() })
       })
       @infoWindow.open(@map, @placeMarker)
 
@@ -125,8 +125,8 @@ class EventView extends BaseView
     })
 
   infoWindowForUser: (user) ->
-    content = Templates.NameInfo({ user })
-    content += Templates.PhoneInfo({ user }) if user.get("phone")
+    content = Templates.EventView.NameInfo({ user })
+    content += Templates.EventView.PhoneInfo({ user }) if user.get("phone")
     new google.maps.InfoWindow({ content })
 
   onTimeout: () =>

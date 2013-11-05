@@ -1,5 +1,6 @@
 express = require("express")
 bookshelf = require("bookshelf")
+util = require("util")
 
 MySql = bookshelf.initialize {
   client: "mysql"
@@ -31,14 +32,12 @@ class Event extends RndzvsModel
 
   tableName: "event"
 
-  @defineProperty: (prop) ->
-    Object.defineProperty @prototype, prop, {
-      get: () -> @get(prop)
-      set: (value) -> @set(prop, value)
-    }
-
   for prop in ["createdAt", "code", "name", "info", "place", "address", "latitude", "longitude", "date", "creatorId"]
-    @defineProperty(prop)
+    do (prop) ->
+      Object.defineProperty Event.prototype, prop, {
+        get: () -> @get(prop)
+        set: (value) -> @set(prop, value)
+      }
 
   @toModel: (obj) ->
     return new Event(obj)
@@ -70,14 +69,12 @@ class User extends RndzvsModel
 
   tableName: "user"
 
-  @defineProperty: (prop) ->
-    Object.defineProperty @prototype, prop, {
-      get: () -> @get(prop)
-      set: (value) -> @set(prop, value)
-    }
-
   for prop in ["createdAt", "updatedAt", "name", "phone", "eventId", "latitude", "longitude"]
-    @defineProperty(prop)
+    do (prop) ->
+      Object.defineProperty User.prototype, prop, {
+        get: () -> @get(prop)
+        set: (value) -> @set(prop, value)
+      }
 
   @toModel: (obj) ->
     return new User(obj)

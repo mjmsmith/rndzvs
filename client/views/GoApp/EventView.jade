@@ -9,19 +9,19 @@ div(style="width:100%; height:100%")
       select#users
         option(disabled="true") who's where?
 
-//- UserOption.jade
+//-- UserOption.jade
 
 option(value="#{user.id}") #{user.get("name")}
 
-//- PlaceInfo.jade
+//-- PlaceInfo.jade
 
 div #{event.get("place")}
 
-//- NameInfo.jade
+//-- NameInfo.jade
 
 div #{user.get("name")}
 
-//- PhoneInfo.jade
+//-- PhoneInfo.jade
 
 //- Jade 0.3.5 chokes on triple-nested quotes.
 - var phone = user.get("phone")

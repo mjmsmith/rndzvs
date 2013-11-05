@@ -34,7 +34,7 @@ class JoinView extends BaseView
 
 class JoinApp extends BaseApp
 
-  _event: new EventModel(eventObj)
+  _event: new EventModel(window.rndzvs.event)
 
   event: () ->
     @_event

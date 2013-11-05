@@ -166,8 +166,8 @@ class EventView extends BaseView
 
 class GoApp extends BaseApp
 
-  _user: new UserModel(userObj)
-  _event: new EventModel(eventObj)
+  _user: new UserModel(window.rndzvs.user)
+  _event: new EventModel(window.rndzvs.event)
 
   user: () ->
     @_user

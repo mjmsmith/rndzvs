@@ -63,12 +63,13 @@ class App
       }))
       server.use(require("stylus").middleware({ src: path.join(@_rootDir, "public") }))
       server.use(connectCoffeeScript({
-        src: @_rootDir
-        dest: path.join(@_rootDir, "public", "javascripts")
-        prefix: "/javascripts"
+        src: path.join(@_rootDir, "client", "apps")
+        dest: path.join(@_rootDir, "public", "javascripts", "client", "apps")
+        prefix: "/javascripts/client/apps"
       }))
       server.use(connectJadeClient({
-        rootDirPath: path.join(@_rootDir, "client", "views")
+        rootSrcPath: path.join(@_rootDir, "client", "views")
+        rootDstPath: path.join(@_rootDir, "public")
         rootUrlPath: "/javascripts/client/views"
         templatesVarName: "Templates"
       }))

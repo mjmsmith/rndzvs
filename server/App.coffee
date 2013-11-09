@@ -29,14 +29,12 @@ class App
 
   loadSessionUser: (req, res, next) =>
     if req.session.activeUserId
-      new User(id: req.session.activeUserId).fetch().then(
-        (user) ->
+      new User(id: req.session.activeUserId).fetch().then (user) ->
+        if user
           req.user = user
           next()
-        ,
-        () ->
+        else
           res.redirect("/")
-      )
     else
       res.redirect("/")
 
@@ -104,20 +102,18 @@ class App
       }
 
     server.get "/join/:code", (req, res) ->
-      new Event(code: req.params.code).fetch().then(
-        (event) ->
+      new Event(code: req.params.code).fetch().then (event) ->
+        if event
           res.render "join", {
             title: "rndzvs"
             event: event
           }
-        ,
-        () ->
+        else
           res.redirect("/")
-      )
     
     server.get "/go/:code", (req, res) ->
-      new Event(code: req.params.code).fetch().then(
-        (event) ->
+      new Event(code: req.params.code).fetch().then (event) ->
+        if event
           userIds = if req.session.userIds?.length > 0 then req.session.userIds else [0]
           new User().query().where(eventId: event.id).whereIn("id", userIds).then(
             (users) ->
@@ -135,10 +131,8 @@ class App
             () ->
               res.redirect("/")
           )
-        ,
-        () ->
+        else
           res.redirect("/")
-      )
 
     # Event routes.
 
@@ -153,13 +147,19 @@ class App
 
     server.get "/events/:id", (req, res) ->
       new Event(id: req.params.id).fetch().then (event) ->
-        res.send(event.toJSON())
+        if event
+          res.send(event.toJSON())
+        else
+          res.send(500, "no")
 
     server.put "/events/:id", @requireDevEnv, (req, res) ->
       new Event(id: req.params.id).fetch().then (event) ->
-        event.set(req.body)
-        event.save().then (event) ->
-          res.send(event.toJSON())
+        if event
+          event.set(req.body)
+          event.save().then (event) ->
+            res.send(event.toJSON())
+        else
+          res.send(500, "no")
 
     server.del "/events/:id", @requireDevEnv, (req, res) ->
       new Event(id: req.params.id).destroy()
@@ -180,21 +180,27 @@ class App
 
     server.post "/users", (req, res) ->
       new Event(id: req.body.eventId).fetch().then (event) ->
-        new User(req.body).save().then (user) ->
-          req.session.activeUserId = user.id
-          req.session.userIds = [] if !req.session.userIds
-          req.session.userIds.push(req.session.activeUserId)
+        if event
+          new User(req.body).save().then (user) ->
+            req.session.activeUserId = user.id
+            req.session.userIds = [] if !req.session.userIds
+            req.session.userIds.push(req.session.activeUserId)
 
-          if !event.creatorId
-            event.creatorId = user.id
-            event.save().then (event) ->
+            if !event.creatorId
+              event.creatorId = user.id
+              event.save().then (event) ->
+                res.send(user.toJSON())
+            else
               res.send(user.toJSON())
-          else
-            res.send(user.toJSON())
+        else
+          res.send(500, "no")
 
     server.get "/users/:id", (req, res) ->
       new User(id: req.params.id).fetch().then (user) ->
-        res.send(user.toJSON())
+        if user
+          res.send(user.toJSON())
+        else
+          res.send(500, "no")
 
     server.put "/users/:id", @loadSessionUser, (req, res) ->
       req.user.set(req.body)

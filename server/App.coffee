@@ -44,7 +44,7 @@ class App
     if process.env.NODE_ENV == "development"
       next()
     else
-      res.send(401, "no");
+      res.send(401, "no")
 
   createServer: ->
     server = express()
@@ -68,10 +68,11 @@ class App
         prefix: "/javascripts/client/apps"
       }))
       server.use(connectJadeClient({
-        rootSrcPath: path.join(@_rootDir, "client", "views")
-        rootDstPath: path.join(@_rootDir, "public")
-        rootUrlPath: "/javascripts/client/views"
-        templatesVarName: "Templates"
+        source: path.join(@_rootDir, "client", "views")
+        public: path.join(@_rootDir, "public")
+        prefix: "/javascripts/client/views"
+        global: "Templates"
+        reload: false
       }))
       server.use(express.static(path.join(@_rootDir, "public")))
       server.use(server.router)
@@ -131,7 +132,7 @@ class App
               else
                 res.redirect("/join/#{req.params.code}")
             ,
-            () ->          
+            () ->
               res.redirect("/")
           )
         ,
@@ -174,7 +175,7 @@ class App
         ,
         (err) ->
           console.log(err)
-          res.send(500, "no");
+          res.send(500, "no")
       )
 
     server.post "/users", (req, res) ->

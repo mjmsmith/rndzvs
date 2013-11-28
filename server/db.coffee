@@ -18,6 +18,12 @@ MySql = bookshelf.initialize {
 
 class RndzvsModel extends MySql.Model
 
+  @toModel: (obj) ->
+    return new @(obj)
+
+  @toModels: (objs) ->
+    return (new @(obj) for obj in objs)
+
   toString: () ->
     @constructor.name
 
@@ -38,12 +44,6 @@ class Event extends RndzvsModel
         get: () -> @get(prop)
         set: (value) -> @set(prop, value)
       }
-
-  @toModel: (obj) ->
-    return new Event(obj)
-
-  @toModels: (objs) ->
-    return (new Event(obj) for obj in objs)
 
   constructor: (attrs, opts) ->
     super
@@ -75,12 +75,6 @@ class User extends RndzvsModel
         get: () -> @get(prop)
         set: (value) -> @set(prop, value)
       }
-
-  @toModel: (obj) ->
-    return new User(obj)
-
-  @toModels: (objs) ->
-    return (new User(obj) for obj in objs)
 
   constructor: (attrs, opts) ->
     super

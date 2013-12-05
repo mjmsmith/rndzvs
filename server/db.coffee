@@ -18,6 +18,16 @@ MySql = bookshelf.initialize {
 
 class RndzvsModel extends MySql.Model
 
+  @defineAttributeProperties: () ->
+    proto = @prototype
+    for name in @prototype.attributeNames
+      do (name) ->
+        Object.defineProperty proto, name, {
+          get: () -> @get(name)
+          set: (value) -> @set(name, value)
+        }
+    
+  
   @toModel: (obj) ->
     return new @(obj)
 
@@ -29,6 +39,9 @@ class RndzvsModel extends MySql.Model
 
 class RndzvsCollection extends MySql.Collection
 
+  @toCollection: (objs) ->
+    return new @(@model.toModels(objs))
+  
   toString: () ->
     @constructor.name
 
@@ -37,14 +50,10 @@ class RndzvsCollection extends MySql.Collection
 class Event extends RndzvsModel
 
   tableName: "event"
+  attributeNames: ["createdAt", "code", "name", "info", "place", "address", "latitude", "longitude", "date", "creatorId"]
 
-  for prop in ["createdAt", "code", "name", "info", "place", "address", "latitude", "longitude", "date", "creatorId"]
-    do (prop) ->
-      Object.defineProperty Event.prototype, prop, {
-        get: () -> @get(prop)
-        set: (value) -> @set(prop, value)
-      }
-
+  @defineAttributeProperties()
+  
   constructor: (attrs, opts) ->
     super
 
@@ -68,13 +77,9 @@ class EventCollection extends RndzvsCollection
 class User extends RndzvsModel
 
   tableName: "user"
+  attributeNames: ["createdAt", "updatedAt", "name", "phone", "eventId", "latitude", "longitude"]
 
-  for prop in ["createdAt", "updatedAt", "name", "phone", "eventId", "latitude", "longitude"]
-    do (prop) ->
-      Object.defineProperty User.prototype, prop, {
-        get: () -> @get(prop)
-        set: (value) -> @set(prop, value)
-      }
+  @defineAttributeProperties()
 
   constructor: (attrs, opts) ->
     super

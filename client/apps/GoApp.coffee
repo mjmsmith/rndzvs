@@ -22,15 +22,15 @@ class EventView extends BaseView
 
     # Set event info.
 
-    $("#place").text(event.get("place"))
-    $("#address").text(event.get("address"))
-    $("#date").text(event.dateTitle())
+    @$("#place").text(event.get("place"))
+    @$("#address").text(event.get("address"))
+    @$("#date").text(event.dateTitle())
 
     # Create map and event marker.
 
     position = new google.maps.LatLng(event.get("latitude"), event.get("longitude"))
 
-    @map = new google.maps.Map($("#map").get(0), {
+    @map = new google.maps.Map(@$("#map").get(0), {
       zoom: 14
       center: position
       mapTypeId: google.maps.MapTypeId.ROADMAP
@@ -60,8 +60,8 @@ class EventView extends BaseView
     for user in @users.models
       @updateUserMarker(user) if user.get("latitude") && user.get("longitude")
 
-    $("#users").html("""<option disabled="true">who's where?</option>""")
-    $("#users").append(Templates.EventView.UserOption({ user })) for user in @users.models
+    @$("#users").html("""<option disabled="true">who's where?</option>""")
+    @$("#users").append(Templates.EventView.UserOption({ user })) for user in @users.models
 
   updateUserMarker: (user) ->
     marker = @userMarkers[user.id]
@@ -155,7 +155,7 @@ class EventView extends BaseView
     setTimeout(@onTimeout, 5000)
 
   onSelectUser: () =>
-    @openInfoWindow(@users.get($("#users").val()))
+    @openInfoWindow(@users.get(@$("#users").val()))
 
   onClickDetails: () =>
     @openInfoWindow(null)

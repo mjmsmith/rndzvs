@@ -2,8 +2,7 @@ extends layout
 
 block content
   script.
-    window.rndzvs = {}
-    window.rndzvs.event = !{JSON.stringify(event)}
+    window.rndzvs = { event: !{JSON.stringify(event)} };
   script(src="/javascripts/client/views/JoinApp.js")
   script(src="/javascripts/client/apps/JoinApp.js")
   

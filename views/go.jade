@@ -2,9 +2,10 @@ extends layout
 
 block content
   script.
-    window.rndzvs = {}
-    window.rndzvs.user = !{JSON.stringify(user)}
-    window.rndzvs.event = !{JSON.stringify(event)}
+    window.rndzvs = {
+      user: !{JSON.stringify(user)},
+      event: !{JSON.stringify(event)}
+    };
   script(src="/javascripts/client/views/GoApp.js")
   script(src="/javascripts/client/apps/GoApp.js")
   

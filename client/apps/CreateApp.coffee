@@ -17,7 +17,7 @@ class SelectPlaceView extends BaseView
     @
     
   activated: () ->
-    $("#title").text("select a place")
+    @$("#title").text("select a place")
     navigator.geolocation.getCurrentPosition(@onLocateSuccess, @onLocateFailure)
 
   loadMap: () ->
@@ -28,9 +28,9 @@ class SelectPlaceView extends BaseView
       mapTypeControl: false
     }
 
-    @map = new google.maps.Map($("#map").get(0), options)
+    @map = new google.maps.Map(@$("#map").get(0), options)
 
-    @autocomplete = new google.maps.places.Autocomplete($("#search").get(0))
+    @autocomplete = new google.maps.places.Autocomplete(@$("#search").get(0))
     @autocomplete.bindTo('bounds', @map)
 
     google.maps.event.addListener(@autocomplete, "place_changed", @onPlaceChanged)
@@ -61,7 +61,7 @@ class SelectPlaceView extends BaseView
     @infoWindow = new google.maps.InfoWindow(content: Templates.SelectPlaceInfoView("place": @place))
     @infoWindow.open(@map, @marker)
 
-    $("#search").val("")
+    @$("#search").val("")
 
   onClickUse: () =>
     event = App.event()
@@ -88,25 +88,25 @@ class CreateEventView extends BaseView
     @
 
   activated: () ->
-    $("#title").text("describe the event")
+    @$("#title").text("describe the event")
 
     event = App.event()
 
-    $("#name").val(event.get("name")) if event.get("name")
-    $("#place").val(event.get("place")) if event.get("place")
-    $("#address").val(event.get("address")) if event.get("address")
+    @$("#name").val(event.get("name")) if event.get("name")
+    @$("#place").val(event.get("place")) if event.get("place")
+    @$("#address").val(event.get("address")) if event.get("address")
 
     days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
     startDayIndex = (new Date().getDay() + 2) % 7
 
-    $("#dateDay").append("<option>Today</option>")
-    $("#dateDay").append("<option>Tomorrow</option>")
+    @$("#dateDay").append("<option>Today</option>")
+    @$("#dateDay").append("<option>Tomorrow</option>")
     for dayIndex in [startDayIndex..startDayIndex+4]
-      $("#dateDay").append("<option>#{days[dayIndex%7]}</option>")
+      @$("#dateDay").append("<option>#{days[dayIndex%7]}</option>")
 
-    $("#dateHour").append("<option>#{hour}</option>") for hour in [12].concat([1..11])
-    $("#dateMinute").append("<option>#{("0"+minute).slice(-2)}</option>") for minute in [0,5,10,15,20,25,30,35,40,45,50,55]
-    $("#dateAmPm").append("<option>AM</option><option>PM</option>")
+    @$("#dateHour").append("<option>#{hour}</option>") for hour in [12].concat([1..11])
+    @$("#dateMinute").append("<option>#{("0"+minute).slice(-2)}</option>") for minute in [0,5,10,15,20,25,30,35,40,45,50,55]
+    @$("#dateAmPm").append("<option>AM</option><option>PM</option>")
 
   dateFromForm: () ->
     date = new Date()
@@ -118,25 +118,25 @@ class CreateEventView extends BaseView
 
     time = date.getTime()
     
-    time += $("#dateDay").prop("selectedIndex") * 24*60*60*1000
-    time += $("#dateHour").prop("selectedIndex") * 60*60*1000
-    time += 12*60*60*1000 if $("#dateAmPm").prop("selectedIndex") == 1
-    time += $("#dateMinute").prop("selectedIndex") * 5*60*1000
+    time += @$("#dateDay").prop("selectedIndex") * 24*60*60*1000
+    time += @$("#dateHour").prop("selectedIndex") * 60*60*1000
+    time += 12*60*60*1000 if @$("#dateAmPm").prop("selectedIndex") == 1
+    time += @$("#dateMinute").prop("selectedIndex") * 5*60*1000
 
     new Date(time)
 
   onClickCreate: () =>
-    $("label").removeClass("error")
+    @$("label").removeClass("error")
     for i in @$el.find("input.required").filter(-> !@value)
-      @blink($("label[for='#{$(i).attr('name')}']").addClass("error"), 3)
+      @blink(@$("label[for='#{$(i).attr('name')}']").addClass("error"), 3)
     return if @$el.find("label.error").length
     
     event = App.event()
 
     event.set({
-      name: $("#name").val()
-      place: $("#place").val()
-      address: $("#address").val()
+      name: @$("#name").val()
+      place: @$("#place").val()
+      address: @$("#address").val()
       date: @dateFromForm()
     })
 
@@ -162,19 +162,19 @@ class CreateUserView extends BaseView
     @
 
   activated: () ->
-    $("#title").text("describe yourself")
+    @$("#title").text("describe yourself")
 
   onClickCreate: () =>
-    $("label").removeClass("error")
+    @$("label").removeClass("error")
     for i in @$el.find("input.required").filter(-> !@value)
-      @blink($("label[for='#{$(i).attr('name')}']").addClass("error"), 3)
+      @blink(@$("label[for='#{$(i).attr('name')}']").addClass("error"), 3)
     return if @$el.find("label.error").length
 
     user = App.user()
 
     user.set({
-      name: $("#name").val()
-      phone: $("#phone").val().replace(/[^0-9]/g, "")
+      name: @$("#name").val()
+      phone: @$("#phone").val().replace(/[^0-9]/g, "")
       eventId: App.event().id
     })
 
@@ -201,8 +201,8 @@ class ExitView extends BaseView
     @
 
   activated: () ->
-    $("#title").text("done")
-    $("#link").html("Your event link is http://rndzvs.com#{@goPath()}").show()
+    @$("#title").text("done")
+    @$("#link").html("Your event link is http://rndzvs.com#{@goPath()}").show()
 
   goPath: () ->
     """/go/#{App.event().get("code")}"""

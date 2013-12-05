@@ -14,14 +14,14 @@ class JoinView extends BaseView
     @
     
   onClickJoin: () ->
-    $("label").removeClass("error")
+    @$("label").removeClass("error")
     for i in @$el.find("input.required").filter(-> !@value)
-      @blink($("label[for='#{$(i).attr('name')}']").addClass("error"), 3)
+      @blink(@$("label[for='#{$(i).attr('name')}']").addClass("error"), 3)
     return if @$el.find("label.error").length
  
     user = new UserModel({
-      name: @nameInput.val()
-      phone: @phoneInput.val().replace(/[^0-9]/g, "")
+      name: @$("#name").val()
+      phone: @$("#phone").val().replace(/[^0-9]/g, "")
       eventId: App.event().id
     })
     user.save(null, { success: @onSaveSuccess, error: @onSaveError })

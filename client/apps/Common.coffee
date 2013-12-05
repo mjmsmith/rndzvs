@@ -43,22 +43,8 @@ class @UserCollection extends BaseCollection
 
 class @BaseView extends Backbone.View
 
-  elements: {}
-
-  render: () ->
-    @updateElements()
-    @
-
-  activate: () ->
-    $("#window").html(@el)
-
-  deactivate: () ->
-    @remove()
-
-  updateElements: () ->
-    @[val] = @$(key) for own key, val of @elements
-    null
-
+  activated: () ->
+  
   blink: (element, count) ->
     return if !(count--)
     $(element).fadeOut "fast", () =>
@@ -70,7 +56,7 @@ class @BaseApp
   _activeView: null
 
   activateView: (view) ->
-    @_activeView.deactivate() if @_activeView?
+    @_activeView.remove() if @_activeView?
     @_activeView = view
-    @_activeView.render()
-    @_activeView.activate()
+    $("#window").html(@_activeView.render().el)
+    @_activeView.activated()

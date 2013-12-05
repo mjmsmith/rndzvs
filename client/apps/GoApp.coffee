@@ -1,38 +1,36 @@
 class EventView extends BaseView
 
-  el: Templates.EventView()
   map: null
   placeMarker: null
   users: null
   userMarkers: {}
   infoWindow: null
 
-  elements:
-    "#details": "detailsDiv"
-    "#place": "placeDiv"
-    "#address": "addressDiv"
-    "#date": "dateDiv"
-    "#map": "mapDiv"
-    "#users": "usersSelect"
+  attributes:
+    style: "width: 100%; height: 100%"
 
   events:
     "click #details": "onClickDetails"
     "change #users": "onSelectUser"
 
-  activate: () ->
+  render: () ->
+    @$el.html(Templates.EventView())
+    @
+    
+  activated: () ->
     event = App.event()
 
     # Set event info.
 
-    @placeDiv.text(event.get("place"))
-    @addressDiv.text(event.get("address"))
-    @dateDiv.text(event.dateTitle())
+    $("#place").text(event.get("place"))
+    $("#address").text(event.get("address"))
+    $("#date").text(event.dateTitle())
 
     # Create map and event marker.
 
     position = new google.maps.LatLng(event.get("latitude"), event.get("longitude"))
 
-    @map = new google.maps.Map(@mapDiv.get(0), {
+    @map = new google.maps.Map($("#map").get(0), {
       zoom: 14
       center: position
       mapTypeId: google.maps.MapTypeId.ROADMAP
@@ -52,8 +50,6 @@ class EventView extends BaseView
     @users = new UserCollection()
     setTimeout(@onTimeout, 5000)
 
-    super
-
   fetchUsers: () ->
     @users.fetch({
       success: @onFetchSuccess
@@ -64,8 +60,8 @@ class EventView extends BaseView
     for user in @users.models
       @updateUserMarker(user) if user.get("latitude") && user.get("longitude")
 
-    @usersSelect.html("""<option disabled="true">who's where?</option>""")
-    @usersSelect.append(Templates.EventView.UserOption({ user })) for user in @users.models
+    $("#users").html("""<option disabled="true">who's where?</option>""")
+    $("#users").append(Templates.EventView.UserOption({ user })) for user in @users.models
 
   updateUserMarker: (user) ->
     marker = @userMarkers[user.id]
@@ -159,7 +155,7 @@ class EventView extends BaseView
     setTimeout(@onTimeout, 5000)
 
   onSelectUser: () =>
-    @openInfoWindow(@users.get(@usersSelect.val()))
+    @openInfoWindow(@users.get($("#users").val()))
 
   onClickDetails: () =>
     @openInfoWindow(null)

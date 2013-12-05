@@ -1,11 +1,7 @@
 class JoinView extends BaseView
 
-  el: Templates.JoinView()
-
-  elements:
-    "#name": "nameInput"
-    "#phone": "phoneInput"
-    "#join": "joinButton"
+  attributes:
+    style: "width: 100%; height: 100%"
 
   events:
     "click #join": "onClickJoin"
@@ -13,6 +9,10 @@ class JoinView extends BaseView
   goPath: () ->
     """/go/#{App.event().get("code")}"""
 
+  render: () ->
+    @$el.html(Templates.JoinView())
+    @
+    
   onClickJoin: () ->
     $("label").removeClass("error")
     for i in @$el.find("input.required").filter(-> !@value)

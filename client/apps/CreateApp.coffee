@@ -1,24 +1,24 @@
 class SelectPlaceView extends BaseView
 
-  el: Templates.SelectPlaceView()
   map: null
   autocomplete: null
   marker: null
   infoWindow: null
   place: null
 
-  elements:
-    "#search": "searchInput"
-    "#map": "mapDiv"
-    "#use": "useButton"
-
+  attributes:
+    style: "width: 100%; height: 100%"
+  
   events:
     "click #use": "onClickUse"
 
-  activate: () ->
+  render: () ->
+    @$el.html(Templates.SelectPlaceView())
+    @
+    
+  activated: () ->
     $("#title").text("select a place")
     navigator.geolocation.getCurrentPosition(@onLocateSuccess, @onLocateFailure)
-    super
 
   loadMap: () ->
     options = {
@@ -28,9 +28,9 @@ class SelectPlaceView extends BaseView
       mapTypeControl: false
     }
 
-    @map = new google.maps.Map(@mapDiv.get(0), options)
+    @map = new google.maps.Map($("#map").get(0), options)
 
-    @autocomplete = new google.maps.places.Autocomplete(@searchInput.get(0))
+    @autocomplete = new google.maps.places.Autocomplete($("#search").get(0))
     @autocomplete.bindTo('bounds', @map)
 
     google.maps.event.addListener(@autocomplete, "place_changed", @onPlaceChanged)
@@ -61,7 +61,7 @@ class SelectPlaceView extends BaseView
     @infoWindow = new google.maps.InfoWindow(content: Templates.SelectPlaceInfoView("place": @place))
     @infoWindow.open(@map, @marker)
 
-    @searchInput.val("")
+    $("#search").val("")
 
   onClickUse: () =>
     event = App.event()
@@ -77,43 +77,36 @@ class SelectPlaceView extends BaseView
 
 class CreateEventView extends BaseView
 
-  el: Templates.CreateEventView()
-
-  elements:
-    "#name": "nameInput"
-    "#place": "placeInput"
-    "#address": "addressInput"
-    "#dateDay": "dateDaySelect"
-    "#dateHour": "dateHourSelect"
-    "#dateMinute": "dateMinuteSelect"
-    "#dateAmPm": "dateAmPmSelect"
-    "#create": "createButton"
+  attributes:
+    style: "width: 100%; height: 100%"
 
   events:
     "click #create": "onClickCreate"
 
-  activate: () ->
+  render: () ->
+    @$el.html(Templates.CreateEventView())
+    @
+
+  activated: () ->
     $("#title").text("describe the event")
 
     event = App.event()
 
-    @nameInput.val(event.get("name")) if event.get("name")
-    @placeInput.val(event.get("place")) if event.get("place")
-    @addressInput.val(event.get("address")) if event.get("address")
+    $("#name").val(event.get("name")) if event.get("name")
+    $("#place").val(event.get("place")) if event.get("place")
+    $("#address").val(event.get("address")) if event.get("address")
 
     days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
     startDayIndex = (new Date().getDay() + 2) % 7
 
-    @dateDaySelect.append("<option>Today</option>")
-    @dateDaySelect.append("<option>Tomorrow</option>")
+    $("#dateDay").append("<option>Today</option>")
+    $("#dateDay").append("<option>Tomorrow</option>")
     for dayIndex in [startDayIndex..startDayIndex+4]
-      @dateDaySelect.append("<option>#{days[dayIndex%7]}</option>")
+      $("#dateDay").append("<option>#{days[dayIndex%7]}</option>")
 
-    @dateHourSelect.append("<option>#{hour}</option>") for hour in [12].concat([1..11])
-    @dateMinuteSelect.append("<option>#{("0"+minute).slice(-2)}</option>") for minute in [0,5,10,15,20,25,30,35,40,45,50,55]
-    @dateAmPmSelect.append("<option>AM</option><option>PM</option>")
-
-    super
+    $("#dateHour").append("<option>#{hour}</option>") for hour in [12].concat([1..11])
+    $("#dateMinute").append("<option>#{("0"+minute).slice(-2)}</option>") for minute in [0,5,10,15,20,25,30,35,40,45,50,55]
+    $("#dateAmPm").append("<option>AM</option><option>PM</option>")
 
   dateFromForm: () ->
     date = new Date()
@@ -125,10 +118,10 @@ class CreateEventView extends BaseView
 
     time = date.getTime()
     
-    time += (@dateDaySelect.prop("selectedIndex") * 24*60*60*1000)
-    time += (@dateHourSelect.prop("selectedIndex") * 60*60*1000)
-    time += 12*60*60*1000 if @dateAmPmSelect.prop("selectedIndex") == 1
-    time += (@dateMinuteSelect.prop("selectedIndex") * 5*60*1000);
+    time += $("#dateDay").prop("selectedIndex") * 24*60*60*1000
+    time += $("#dateHour").prop("selectedIndex") * 60*60*1000
+    time += 12*60*60*1000 if $("#dateAmPm").prop("selectedIndex") == 1
+    time += $("#dateMinute").prop("selectedIndex") * 5*60*1000
 
     new Date(time)
 
@@ -141,9 +134,9 @@ class CreateEventView extends BaseView
     event = App.event()
 
     event.set({
-      name: @nameInput.val()
-      place: @placeInput.val()
-      address: @addressInput.val()
+      name: $("#name").val()
+      place: $("#place").val()
+      address: $("#address").val()
       date: @dateFromForm()
     })
 
@@ -158,19 +151,18 @@ class CreateEventView extends BaseView
 
 class CreateUserView extends BaseView
 
-  el: Templates.CreateUserView()
-
-  elements:
-    "#name": "nameInput"
-    "#phone": "phoneInput"
-    "#create": "createButton"
+  attributes:
+    style: "width: 100%; height: 100%"
 
   events:
     "click #create": "onClickCreate"
 
-  activate: () ->
+  render: () ->
+    @$el.html(Templates.CreateUserView())
+    @
+
+  activated: () ->
     $("#title").text("describe yourself")
-    super
 
   onClickCreate: () =>
     $("label").removeClass("error")
@@ -181,8 +173,8 @@ class CreateUserView extends BaseView
     user = App.user()
 
     user.set({
-      name: @nameInput.val()
-      phone: @phoneInput.val().replace(/[^0-9]/g, "")
+      name: $("#name").val()
+      phone: $("#phone").val().replace(/[^0-9]/g, "")
       eventId: App.event().id
     })
 
@@ -197,21 +189,20 @@ class CreateUserView extends BaseView
 
 class ExitView extends BaseView
 
-  el: Templates.ExitView()
-
-  elements:
-    "#link": "linkDiv"
-    "#email": "emailButton"
-    "#go": "goButton"
+  attributes:
+    style: "width: 100%; height: 100%"
 
   events:
     "click #email": "onClickEmail"
     "click #go": "onClickGo"
 
-  activate: () ->
+  render: () ->
+    @$el.html(Templates.ExitView())
+    @
+
+  activated: () ->
     $("#title").text("done")
-    @linkDiv.html("Your event link is http://rndzvs.com#{@goPath()}").show()
-    super
+    $("#link").html("Your event link is http://rndzvs.com#{@goPath()}").show()
 
   goPath: () ->
     """/go/#{App.event().get("code")}"""

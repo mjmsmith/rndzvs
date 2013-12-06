@@ -17,7 +17,7 @@ class SelectPlaceView extends BaseView
     @
     
   activated: () ->
-    @$("#title").text("select a place")
+    $("#title").text("select a place")
     navigator.geolocation.getCurrentPosition(@onLocateSuccess, @onLocateFailure)
 
   loadMap: () ->
@@ -88,7 +88,7 @@ class CreateEventView extends BaseView
     @
 
   activated: () ->
-    @$("#title").text("describe the event")
+    $("#title").text("describe the event")
 
     event = App.event()
 
@@ -162,7 +162,7 @@ class CreateUserView extends BaseView
     @
 
   activated: () ->
-    @$("#title").text("describe yourself")
+    $("#title").text("describe yourself")
 
   onClickCreate: () =>
     @$("label").removeClass("error")
@@ -201,7 +201,7 @@ class ExitView extends BaseView
     @
 
   activated: () ->
-    @$("#title").text("done")
+    $("#title").text("done")
     @$("#link").html("Your event link is http://rndzvs.com#{@goPath()}").show()
 
   goPath: () ->

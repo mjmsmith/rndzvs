@@ -14,17 +14,14 @@ class EventView extends BaseView
     "change #users": "onSelectUser"
 
   render: () ->
-    @$el.html(Templates.EventView())
-    @
-    
-  activated: () ->
     event = App.event()
 
-    # Set event info.
-
-    @$("#place").text(event.get("place"))
-    @$("#address").text(event.get("address"))
-    @$("#date").text(event.dateTitle())
+    @$el.html(Templates.EventView({
+        place: event.get("place")
+        address: event.get("address")
+        date: event.dateTitle()
+      })
+    )
 
     # Create map and event marker.
 
@@ -45,8 +42,9 @@ class EventView extends BaseView
     })
     google.maps.event.addListener(@placeMarker, "click", () => @openInfoWindow(null))
 
-    # Setup for updating users.
-
+    @
+    
+  activated: () ->
     @users = new UserCollection()
     setTimeout(@onTimeout, 5000)
 
@@ -61,7 +59,7 @@ class EventView extends BaseView
       @updateUserMarker(user) if user.get("latitude") && user.get("longitude")
 
     @$("#users").html("""<option disabled="true">who's where?</option>""")
-    @$("#users").append(Templates.EventView.UserOption({ user })) for user in @users.models
+    @$("#users").append(Templates.EventView.UserOption({ id: user.id, name: user.get("name") })) for user in @users.models
 
   updateUserMarker: (user) ->
     marker = @userMarkers[user.id]
@@ -82,7 +80,7 @@ class EventView extends BaseView
       @infoWindow.open(@map, @userMarkers[user.id])
     else
       @infoWindow = new google.maps.InfoWindow({
-        content: Templates.EventView.PlaceInfo({ event: App.event() })
+        content: Templates.EventView.PlaceInfo({ place: App.event().get("place") })
       })
       @infoWindow.open(@map, @placeMarker)
 
@@ -121,8 +119,8 @@ class EventView extends BaseView
     })
 
   infoWindowForUser: (user) ->
-    content = Templates.EventView.NameInfo({ user })
-    content += Templates.EventView.PhoneInfo({ user }) if user.get("phone")
+    content = Templates.EventView.NameInfo({ name: user.get("name") })
+    content += Templates.EventView.PhoneInfo({ phone:user.get("phone") }) if user.get("phone")
     new google.maps.InfoWindow({ content })
 
   onTimeout: () =>

@@ -153,7 +153,11 @@ class EventView extends BaseView
     setTimeout(@onTimeout, 5000)
 
   onSelectUser: () =>
-    @openInfoWindow(@users.get(@$("#users").val()))
+    user = @users.get(@$("#users").val())
+    position = new google.maps.LatLng(user.get("latitude"), user.get("longitude"))
+      
+    @map.panTo(position)
+    @openInfoWindow(user)
 
   onClickDetails: () =>
     @openInfoWindow(null)

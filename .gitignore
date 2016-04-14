@@ -1,4 +1,3 @@
-/.idea/
 /client/apps/*.js
 /client/apps/*.map
 /node_modules/
@@ -6,3 +5,4 @@
 /public/stylesheets/*.css
 /server/*.js
 /server/*.map
+/.vscode/

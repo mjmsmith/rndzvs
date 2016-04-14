@@ -1,6 +1,6 @@
 {
   "name": "rndzvs",
-  "preferGlobal": "false",
+  "preferGlobal": false,
   "version": "2.0.0",
   "author": "Mark Smith <mark@camazotz.com>",
   "description": "Adhoc event invitation and location tracking",
